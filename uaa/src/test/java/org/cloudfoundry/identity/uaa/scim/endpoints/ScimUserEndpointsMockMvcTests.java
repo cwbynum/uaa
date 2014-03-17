@@ -13,46 +13,54 @@
 package org.cloudfoundry.identity.uaa.scim.endpoints;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.test.annotation.DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import org.cloudfoundry.identity.uaa.config.YamlServletProfileInitializer;
 import org.cloudfoundry.identity.uaa.scim.ScimUser;
 import org.cloudfoundry.identity.uaa.scim.ScimUserProvisioning;
+import org.cloudfoundry.identity.uaa.test.DefaultIntegrationTestConfig;
+import org.cloudfoundry.identity.uaa.test.IntegrationTestContextLoader;
 import org.cloudfoundry.identity.uaa.test.TestClient;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.springframework.mock.web.MockServletContext;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.web.FilterChainProxy;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.support.XmlWebApplicationContext;
+import org.springframework.web.context.WebApplicationContext;
 
 import com.googlecode.flyway.core.Flyway;
 
+@RunWith(SpringJUnit4ClassRunner.class)
+@WebAppConfiguration
+@ContextConfiguration(classes = DefaultIntegrationTestConfig.class, loader = IntegrationTestContextLoader.class)
+@DirtiesContext(classMode = AFTER_EACH_TEST_METHOD)
 public class ScimUserEndpointsMockMvcTests {
 
-    private XmlWebApplicationContext webApplicationContext;
+    @Autowired WebApplicationContext webApplicationContext;
+    @Autowired FilterChainProxy springSecurityFilterChain;
+    @Autowired Flyway flyway;
+
     private MockMvc mockMvc;
     private String scimToken;
 
     @Before
     public void setUp() throws Exception {
-        webApplicationContext = new XmlWebApplicationContext();
-        webApplicationContext.setServletContext(new MockServletContext());
-        webApplicationContext.setConfigLocation("file:./src/main/webapp/WEB-INF/spring-servlet.xml");
-        new YamlServletProfileInitializer().initialize(webApplicationContext);
-        webApplicationContext.refresh();
-        FilterChainProxy springSecurityFilterChain = webApplicationContext.getBean(FilterChainProxy.class);
-
-        mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).addFilter(springSecurityFilterChain)
-                        .build();
+        mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
+                .addFilter(springSecurityFilterChain)
+                .build();
 
         TestClient testClient = new TestClient(mockMvc);
         String adminToken = testClient.getOAuthAccessToken("admin", "adminsecret", "client_credentials",
@@ -64,9 +72,7 @@ public class ScimUserEndpointsMockMvcTests {
 
     @After
     public void tearDown() throws Exception {
-        Flyway flyway = webApplicationContext.getBean(Flyway.class);
         flyway.clean();
-        webApplicationContext.close();
     }
 
     @Test
