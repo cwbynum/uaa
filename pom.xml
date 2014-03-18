@@ -269,12 +269,32 @@
 						</lifecycleMappingMetadata>
 					</configuration>
 				</plugin>
-				<plugin>
-					<groupId>org.apache.tomcat.maven</groupId>
-					<artifactId>tomcat7-maven-plugin</artifactId>
+                <plugin>
+                    <groupId>org.apache.tomcat.maven</groupId>
+                    <artifactId>tomcat7-maven-plugin</artifactId>
 					<version>2.2</version>
-				</plugin>
-				<plugin>
+                    <executions>
+                        <execution>
+                            <id>start-tomcat</id>
+                            <phase>pre-integration-test</phase>
+                            <goals>
+                                <goal>run-war-only</goal>
+                            </goals>
+                            <configuration>
+                                <port>9090</port>
+                                <fork>true</fork>
+                            </configuration>
+                        </execution>
+                        <execution>
+                            <id>stop-tomcat</id>
+                            <phase>post-integration-test</phase>
+                            <goals>
+                                <goal>shutdown</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
 					<groupId>org.codehaus.mojo</groupId>
 					<artifactId>maven-emma-plugin</artifactId>
 					<version>1.0-alpha-3</version>

@@ -145,7 +145,38 @@
                     <dotGitDirectory>${dot.git.directory}</dotGitDirectory>
 				</configuration>
 			</plugin>
-		</plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <version>2.16</version>
+                <executions>
+                    <execution>
+                        <id>integration-tests</id>
+                        <goals>
+                            <goal>integration-test</goal>
+                        </goals>
+                        <phase>integration-test</phase>
+                        <configuration>
+                            <!-- uncomment the line below and run with 'mvn verify -DskipTests' to run feature tests only -->
+                            <!--<skipTests>false</skipTests>-->
+                            <includes>
+                                <include>**/feature/**/*.*</include>
+                            </includes>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>verify</id>
+                        <goals>
+                            <goal>verify</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.tomcat.maven</groupId>
+                <artifactId>tomcat7-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
 		<pluginManagement>
 			<plugins>
 				<plugin>
@@ -176,6 +207,7 @@
 						</includes>
 						<excludes>
 							<exclude>**/Abstract*.java</exclude>
+                            <exclude>**/feature/**/*.*</exclude>
 						</excludes>
 						<systemPropertyVariables>
 							<spring.profiles.active>${SPRING_PROFILES_ACTIVE}</spring.profiles.active>
@@ -412,6 +444,20 @@
             <groupId>com.jayway.jsonpath</groupId>
             <artifactId>json-path-assert</artifactId>
             <version>0.9.1</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-java</artifactId>
+            <version>2.39.0</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.detro.ghostdriver</groupId>
+            <artifactId>phantomjsdriver</artifactId>
+            <version>1.1.0</version>
             <scope>test</scope>
         </dependency>
 
