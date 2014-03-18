@@ -12,11 +12,19 @@
  *******************************************************************************/
 package org.cloudfoundry.identity.uaa.test;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportResource;
+
+import com.dumbster.smtp.SimpleSmtpServer;
 
 @Configuration
 @ImportResource("file:./src/main/webapp/WEB-INF/spring-servlet.xml")
 public class DefaultIntegrationTestConfig {
-    // empty Java config for test to allow @Autowired tests
+
+    @Bean(destroyMethod = "stop")
+    public SimpleSmtpServer simpleSmtpServer(@Value("${smtp.port:25}") int port) {
+        return SimpleSmtpServer.start(port);
+    }
 }

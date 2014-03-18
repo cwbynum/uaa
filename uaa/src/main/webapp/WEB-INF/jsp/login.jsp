@@ -41,6 +41,7 @@
 				</div>
 				<button type="submit" class="button">Sign in</button>
 			</form>
+            <a href="<c:url value="/forgot_password"/>">Forgot Password?</a>
 		</article>
 		<div class="message">
 			<p>

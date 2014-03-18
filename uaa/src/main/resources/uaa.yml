@@ -31,3 +31,6 @@
 #create database uaa;
 #SET PASSWORD FOR 'root'@'localhost' = PASSWORD('changeme');
 #SET PASSWORD FOR 'root'@'127.0.0.1' = PASSWORD('changeme');
+
+smtp:
+  port: 2525

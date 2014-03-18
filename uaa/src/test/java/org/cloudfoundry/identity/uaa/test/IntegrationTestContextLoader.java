@@ -14,6 +14,7 @@ package org.cloudfoundry.identity.uaa.test;
 
 import org.cloudfoundry.identity.uaa.config.YamlServletProfileInitializer;
 import org.springframework.context.ApplicationContext;
+import org.springframework.mock.web.MockServletConfig;
 import org.springframework.mock.web.MockServletContext;
 import org.springframework.test.context.ContextConfigurationAttributes;
 import org.springframework.test.context.MergedContextConfiguration;
@@ -42,7 +43,11 @@ public class IntegrationTestContextLoader implements SmartContextLoader {
         if (parent != null) {
             context.setParent(parent);
         }
-        context.setServletContext(new MockServletContext());
+        MockServletContext servletContext = new MockServletContext();
+        MockServletConfig servletConfig = new MockServletConfig(servletContext);
+        servletConfig.addInitParameter("environmentConfigDefaults", "uaa.yml");
+        context.setServletContext(servletContext);
+        context.setServletConfig(servletConfig);
         context.setConfigLocations(mergedConfig.getLocations());
         context.register(mergedConfig.getClasses());
         new YamlServletProfileInitializer().initialize(context);

@@ -19,12 +19,16 @@ import org.cloudfoundry.identity.uaa.test.IntegrationTestContextLoader;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
+
+import com.dumbster.smtp.SimpleSmtpServer;
+//import com.dumbster.smtp.SmtpMessage;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
@@ -35,9 +39,26 @@ public class ResetPasswordTests {
     @Autowired
     WebDriver webDriver;
 
+    @Autowired
+    SimpleSmtpServer simpleSmtpServer;
+
     @Test
-    public void testPage() throws Exception {
+    public void requestingAPasswordReset() throws Exception {
         webDriver.get("http://localhost:9090/uaa/login");
         Assert.assertEquals("UAA Login | Cloud Foundry", webDriver.getTitle());
+
+        webDriver.findElement(By.linkText("Forgot Password?")).click();
+        Assert.assertEquals("UAA Reset Password | Cloud Foundry", webDriver.getTitle());
+
+        webDriver.findElement(By.name("email")).sendKeys("user@example.com");
+        webDriver.findElement(By.xpath("//button[contains(text(),'Reset Password')]")).click();
+
+//        Assert.assertEquals(1, simpleSmtpServer.getReceivedEmailSize());
+//        SmtpMessage message = (SmtpMessage) simpleSmtpServer.getReceivedEmail().next();
+//        Assert.assertEquals("user@example.com", message.getHeaderValue("To"));
+//        Assert.assertEquals("clicky the linky to reset your password", message.getBody());
+
+        Assert.assertEquals("An email has been sent with password reset instructions.", webDriver.findElement(By.cssSelector(".flash")).getText());
+        Assert.assertEquals("UAA Reset Password | Cloud Foundry", webDriver.getTitle());
     }
 }

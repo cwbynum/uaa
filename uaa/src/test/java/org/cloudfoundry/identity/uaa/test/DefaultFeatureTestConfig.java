@@ -17,12 +17,10 @@ import org.openqa.selenium.phantomjs.PhantomJSDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.ImportResource;
-
-import java.util.concurrent.TimeUnit;
+import org.springframework.context.annotation.Import;
 
 @Configuration
-@ImportResource("file:./src/main/webapp/WEB-INF/spring-servlet.xml")
+@Import(DefaultIntegrationTestConfig.class)
 public class DefaultFeatureTestConfig {
 
     @Bean
@@ -30,7 +28,6 @@ public class DefaultFeatureTestConfig {
         DesiredCapabilities desiredCapabilities = new DesiredCapabilities();
         PhantomJSDriver driver = new PhantomJSDriver(desiredCapabilities);
         driver.manage().window().setSize(new Dimension(800, 600));
-        driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
         return driver;
     }
 }

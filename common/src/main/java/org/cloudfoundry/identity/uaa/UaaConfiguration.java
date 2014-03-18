@@ -65,6 +65,8 @@ public class UaaConfiguration {
     public Scim scim;
     @Valid
     public CloudController cloud_controller;
+    @Valid
+    public SmtpConfiguration smtp;
 
     public static class CloudController {
         @Valid
@@ -141,6 +143,10 @@ public class UaaConfiguration {
 
     public static class PasswordPolicy {
         public int requiredScore;
+    }
+
+    public static class SmtpConfiguration {
+        public int port;
     }
 
     public static class UaaConfigConstructor extends CustomPropertyConstructor {
