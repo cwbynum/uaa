@@ -18,15 +18,15 @@ script:
   - mvn test --quiet -Dspring.profiles.active=default,mysql
   - mvn test --quiet -Dspring.profiles.active=default,postgresql
   - ./.run-script.sh
-  - mvn test --quiet
+  - mvn verify --quiet
   - kill -9 `cat mvn.pid`
   - rm -f mvn.pid
   - ./.run-script.sh "-Dspring.profiles.active=default,mysql"
-  - mvn test --quiet
+  - mvn verify --quiet
   - kill -9 `cat mvn.pid`
   - rm -f mvn.pid
   - ./.run-script.sh  "-Dspring.profiles.active=default,postgresql" 
-  - mvn test --quiet
+  - mvn verify --quiet
   - kill -9 `cat mvn.pid`
   - rm -f mvn.pid
   
