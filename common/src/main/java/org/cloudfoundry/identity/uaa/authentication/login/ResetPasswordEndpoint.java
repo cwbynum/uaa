@@ -12,7 +12,9 @@
  *******************************************************************************/
 package org.cloudfoundry.identity.uaa.authentication.login;
 
+import org.cloudfoundry.identity.uaa.ResetPasswordService;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -20,13 +22,20 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @Controller
 public class ResetPasswordEndpoint {
 
+    private final ResetPasswordService resetPasswordService;
+
+    public ResetPasswordEndpoint(ResetPasswordService resetPasswordService) {
+        this.resetPasswordService = resetPasswordService;
+    }
+
     @RequestMapping(value = "/forgot_password", method = RequestMethod.GET)
     public String forgotPassword() {
         return "forgot_password";
     }
 
     @RequestMapping(value = "/reset_password.do", method = RequestMethod.POST)
-    public String resetPassword(RedirectAttributes redirectAttributes) {
+    public String resetPassword(@ModelAttribute("email") String email, RedirectAttributes redirectAttributes) {
+        resetPasswordService.resetPassword(email);
         redirectAttributes.addFlashAttribute("success", Boolean.TRUE);
         return "redirect:forgot_password";
     }

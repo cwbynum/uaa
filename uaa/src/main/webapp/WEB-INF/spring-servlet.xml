@@ -168,5 +168,9 @@
 
     <bean id="healthzEndpoint" class="org.cloudfoundry.identity.uaa.web.HealthzEndpoint" />
 
-    <bean id="resetPasswordEndpoint" class="org.cloudfoundry.identity.uaa.authentication.login.ResetPasswordEndpoint" />
+    <bean id="resetPasswordEndpoint" class="org.cloudfoundry.identity.uaa.authentication.login.ResetPasswordEndpoint">
+        <constructor-arg>
+            <bean class="org.cloudfoundry.identity.uaa.EmailResetPasswordService"/>
+        </constructor-arg>
+    </bean>
 </beans>

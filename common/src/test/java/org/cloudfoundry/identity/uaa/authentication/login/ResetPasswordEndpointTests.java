@@ -12,23 +12,44 @@
  *******************************************************************************/
 package org.cloudfoundry.identity.uaa.authentication.login;
 
+import static org.springframework.http.MediaType.APPLICATION_FORM_URLENCODED;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.flash;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
+import org.cloudfoundry.identity.uaa.ResetPasswordService;
+import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
+import org.springframework.http.converter.FormHttpMessageConverter;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
 public class ResetPasswordEndpointTests {
 
+    private MockMvc mockMvc;
+    private ResetPasswordService resetPasswordService;
+
+    @Before
+    public void setUp() throws Exception {
+        resetPasswordService = Mockito.mock(ResetPasswordService.class);
+        ResetPasswordEndpoint controller = new ResetPasswordEndpoint(resetPasswordService);
+
+        InternalResourceViewResolver viewResolver = new InternalResourceViewResolver();
+        viewResolver.setPrefix("/WEB-INF/jsp");
+        viewResolver.setSuffix(".jsp");
+        mockMvc = MockMvcBuilders
+                .standaloneSetup(controller)
+                .setViewResolvers(viewResolver)
+                .build();
+    }
+
     @Test
     public void testForgotPassword() throws Exception {
-        MockMvc mockMvc = getMockMvc(new ResetPasswordEndpoint());
-
         mockMvc.perform(get("/forgot_password"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("forgot_password"));
@@ -36,20 +57,13 @@ public class ResetPasswordEndpointTests {
 
     @Test
     public void testResetPassword() throws Exception {
-        MockMvc mockMvc = getMockMvc(new ResetPasswordEndpoint());
-
-        mockMvc.perform(post("/reset_password.do"))
+        MockHttpServletRequestBuilder post = post("/reset_password.do")
+                .contentType(APPLICATION_FORM_URLENCODED)
+                .param("email", "user@example.com");
+        mockMvc.perform(post)
                 .andExpect(status().isFound())
                 .andExpect(flash().attributeExists("success"));
-    }
 
-    private MockMvc getMockMvc(ResetPasswordEndpoint controller) {
-        InternalResourceViewResolver viewResolver = new InternalResourceViewResolver();
-        viewResolver.setPrefix("/WEB-INF/jsp");
-        viewResolver.setSuffix(".jsp");
-        return MockMvcBuilders
-                .standaloneSetup(controller)
-                .setViewResolvers(viewResolver)
-                .build();
+        Mockito.verify(resetPasswordService).resetPassword("user@example.com");
     }
 }
