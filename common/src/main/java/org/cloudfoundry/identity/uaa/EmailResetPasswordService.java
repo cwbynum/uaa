@@ -22,15 +22,21 @@ import javax.mail.internet.MimeMessage;
 public class EmailResetPasswordService implements ResetPasswordService {
 
     private final int smtpPort;
+    private String smtpHost;
+    private String smtpUser;
 
-    public EmailResetPasswordService(int smtpPort) {
+    public EmailResetPasswordService(String smtpHost, int smtpPort, String smtpUser) {
+        this.smtpHost = smtpHost;
         this.smtpPort = smtpPort;
+        this.smtpUser = smtpUser;
     }
 
     @Override
     public void resetPassword(String email) {
         Properties mailProperties = new Properties();
+        mailProperties.setProperty("mail.smtp.host", smtpHost);
         mailProperties.setProperty("mail.smtp.port", "" + smtpPort);
+        mailProperties.setProperty("mail.smtp.user", smtpUser);
         Session session = Session.getDefaultInstance(mailProperties);
         MimeMessage message = new MimeMessage(session);
         try {

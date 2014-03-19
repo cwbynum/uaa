@@ -33,4 +33,6 @@
 #SET PASSWORD FOR 'root'@'127.0.0.1' = PASSWORD('changeme');
 
 smtp:
+  host: localhost
   port: 2525
+  user:

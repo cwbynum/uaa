@@ -29,7 +29,7 @@ public class EmailResetPasswordServiceTests {
     public void setUp() throws Exception {
         int port = 2525;
         simpleSmtpServer = SimpleSmtpServer.start(port);
-        emailResetPasswordService = new EmailResetPasswordService(port);
+        emailResetPasswordService = new EmailResetPasswordService("localhost", port, "");
     }
 
     @After

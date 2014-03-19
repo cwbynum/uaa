@@ -146,7 +146,9 @@ public class UaaConfiguration {
     }
 
     public static class SmtpConfiguration {
+        public String host;
         public int port;
+        public String user;
     }
 
     public static class UaaConfigConstructor extends CustomPropertyConstructor {
