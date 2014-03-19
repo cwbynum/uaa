@@ -16,7 +16,6 @@ import static org.junit.Assert.assertEquals;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -24,6 +23,7 @@ import java.sql.Timestamp;
 
 import org.cloudfoundry.identity.uaa.codestore.ExpiringCode;
 import org.cloudfoundry.identity.uaa.config.YamlServletProfileInitializer;
+import org.cloudfoundry.identity.uaa.test.MockMvcTestClient;
 import org.cloudfoundry.identity.uaa.test.TestClient;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.AfterClass;
@@ -58,7 +58,7 @@ public class ExpiringCodeStoreMockMvcTests {
 
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).addFilter(springSecurityFilterChain)
                         .build();
-        testClient = new TestClient(mockMvc);
+        testClient = new MockMvcTestClient(mockMvc);
         loginToken = testClient.getOAuthAccessToken("login", "loginsecret", "client_credentials", "oauth.login");
     }
 
@@ -93,7 +93,7 @@ public class ExpiringCodeStoreMockMvcTests {
     public void testGenerateCodeWithInvalidScope() throws Exception {
         Timestamp ts = new Timestamp(System.currentTimeMillis() + 60000);
         ExpiringCode code = new ExpiringCode(null, ts, "{}");
-        TestClient testClient = new TestClient(mockMvc);
+        TestClient testClient = new MockMvcTestClient(mockMvc);
         String loginToken = testClient.getOAuthAccessToken("admin", "adminsecret", "client_credentials", "");
 
         String requestBody = new ObjectMapper().writeValueAsString(code);

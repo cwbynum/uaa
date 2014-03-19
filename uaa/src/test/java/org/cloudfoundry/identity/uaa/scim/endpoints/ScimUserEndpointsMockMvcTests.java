@@ -23,6 +23,7 @@ import org.cloudfoundry.identity.uaa.scim.ScimUser;
 import org.cloudfoundry.identity.uaa.scim.ScimUserProvisioning;
 import org.cloudfoundry.identity.uaa.test.DefaultIntegrationTestConfig;
 import org.cloudfoundry.identity.uaa.test.IntegrationTestContextLoader;
+import org.cloudfoundry.identity.uaa.test.MockMvcTestClient;
 import org.cloudfoundry.identity.uaa.test.TestClient;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.After;
@@ -62,7 +63,7 @@ public class ScimUserEndpointsMockMvcTests {
                 .addFilter(springSecurityFilterChain)
                 .build();
 
-        TestClient testClient = new TestClient(mockMvc);
+        TestClient testClient = new MockMvcTestClient(mockMvc);
         String adminToken = testClient.getOAuthAccessToken("admin", "adminsecret", "client_credentials",
                         "clients.read clients.write clients.secret");
         createScimClient(adminToken);
