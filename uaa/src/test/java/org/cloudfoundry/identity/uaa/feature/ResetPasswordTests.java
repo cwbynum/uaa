@@ -28,7 +28,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
 import com.dumbster.smtp.SimpleSmtpServer;
-//import com.dumbster.smtp.SmtpMessage;
+import com.dumbster.smtp.SmtpMessage;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
@@ -53,10 +53,10 @@ public class ResetPasswordTests {
         webDriver.findElement(By.name("email")).sendKeys("user@example.com");
         webDriver.findElement(By.xpath("//button[contains(text(),'Reset Password')]")).click();
 
-//        Assert.assertEquals(1, simpleSmtpServer.getReceivedEmailSize());
-//        SmtpMessage message = (SmtpMessage) simpleSmtpServer.getReceivedEmail().next();
-//        Assert.assertEquals("user@example.com", message.getHeaderValue("To"));
-//        Assert.assertEquals("clicky the linky to reset your password", message.getBody());
+        Assert.assertEquals(1, simpleSmtpServer.getReceivedEmailSize());
+        SmtpMessage message = (SmtpMessage) simpleSmtpServer.getReceivedEmail().next();
+        Assert.assertEquals("user@example.com", message.getHeaderValue("To"));
+        Assert.assertEquals("This is a placeholder email.  We cannot support resetting of passwords just yet.  Sorry for the ruse.", message.getBody());
 
         Assert.assertEquals("An email has been sent with password reset instructions.", webDriver.findElement(By.cssSelector(".flash")).getText());
         Assert.assertEquals("UAA Reset Password | Cloud Foundry", webDriver.getTitle());

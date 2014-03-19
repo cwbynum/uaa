@@ -170,7 +170,9 @@
 
     <bean id="resetPasswordEndpoint" class="org.cloudfoundry.identity.uaa.authentication.login.ResetPasswordEndpoint">
         <constructor-arg>
-            <bean class="org.cloudfoundry.identity.uaa.EmailResetPasswordService"/>
+            <bean class="org.cloudfoundry.identity.uaa.EmailResetPasswordService">
+                <constructor-arg value="${smtp.port:25}"/>
+            </bean>
         </constructor-arg>
     </bean>
 </beans>
