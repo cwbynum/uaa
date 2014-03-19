@@ -149,6 +149,7 @@ public class UaaConfiguration {
         public String host;
         public int port;
         public String user;
+        public String password;
     }
 
     public static class UaaConfigConstructor extends CustomPropertyConstructor {

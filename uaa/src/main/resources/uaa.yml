@@ -36,3 +36,4 @@ smtp:
   host: localhost
   port: 2525
   user:
+  password:

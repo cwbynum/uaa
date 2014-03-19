@@ -175,6 +175,7 @@
                 <constructor-arg value="${smtp.host:localhost}" />
                 <constructor-arg value="${smtp.port:25}" />
                 <constructor-arg value="${smtp.user:}"/>
+                <constructor-arg value="${smtp.password:}"/>
             </bean>
         </constructor-arg>
     </bean>

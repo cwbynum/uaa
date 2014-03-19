@@ -19,8 +19,10 @@ import org.cloudfoundry.identity.uaa.scim.ScimUserProvisioning;
 
 import java.util.List;
 import java.util.Properties;
+import javax.mail.Authenticator;
 import javax.mail.Message;
 import javax.mail.MessagingException;
+import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.MimeMessage;
@@ -33,12 +35,14 @@ public class EmailResetPasswordService implements ResetPasswordService {
     private final ScimUserProvisioning scimUserProvisioning;
     private final String smtpHost;
     private final String smtpUser;
+    private final String smtpPassword;
 
-    public EmailResetPasswordService(ScimUserProvisioning scimUserProvisioning, String smtpHost, int smtpPort, String smtpUser) {
+    public EmailResetPasswordService(ScimUserProvisioning scimUserProvisioning, String smtpHost, int smtpPort, String smtpUser, String smtpPassword) {
         this.scimUserProvisioning = scimUserProvisioning;
         this.smtpHost = smtpHost;
         this.smtpPort = smtpPort;
         this.smtpUser = smtpUser;
+        this.smtpPassword = smtpPassword;
     }
 
     @Override
@@ -63,6 +67,13 @@ public class EmailResetPasswordService implements ResetPasswordService {
         mailProperties.setProperty("mail.smtp.host", smtpHost);
         mailProperties.setProperty("mail.smtp.port", "" + smtpPort);
         mailProperties.setProperty("mail.smtp.user", smtpUser);
-        return Session.getDefaultInstance(mailProperties);
+        return Session.getDefaultInstance(mailProperties, new StaticAuthenticator());
+    }
+
+    private class StaticAuthenticator extends Authenticator {
+        @Override
+        protected PasswordAuthentication getPasswordAuthentication() {
+            return new PasswordAuthentication(smtpUser, smtpPassword);
+        }
     }
 }

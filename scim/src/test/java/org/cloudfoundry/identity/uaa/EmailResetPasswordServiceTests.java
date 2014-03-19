@@ -35,7 +35,7 @@ public class EmailResetPasswordServiceTests {
         int port = 2525;
         simpleSmtpServer = SimpleSmtpServer.start(port);
         scimUserProvisioning = Mockito.mock(ScimUserProvisioning.class);
-        emailResetPasswordService = new EmailResetPasswordService(scimUserProvisioning, "localhost", port, "");
+        emailResetPasswordService = new EmailResetPasswordService(scimUserProvisioning, "localhost", port, "", "");
     }
 
     @After
